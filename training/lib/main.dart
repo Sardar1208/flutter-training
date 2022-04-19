@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:training/screens/new_page.dart';
 
 import 'screens/homepage.dart';
 
@@ -17,7 +18,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Homepage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const Homepage(),
+        '/newpage': (context) => const NewPage(),
+      },
     );
   }
 }
