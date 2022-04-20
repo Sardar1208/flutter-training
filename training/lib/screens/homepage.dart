@@ -6,17 +6,62 @@ class Homepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const _biggerFont = TextStyle(fontSize: 18);
+    final _saved = <WordPair>{};
+
+    void _pushSaved() {
+      Navigator.of(context).push(
+        // Add lines from here...
+        MaterialPageRoute<void>(
+          builder: (context) {
+            final tiles = _saved.map(
+              (pair) {
+                return ListTile(
+                  title: Text(
+                    pair.asPascalCase,
+                    style: _biggerFont,
+                  ),
+                );
+              },
+            );
+            final divided = tiles.isNotEmpty
+                ? ListTile.divideTiles(
+                    context: context,
+                    tiles: tiles,
+                  ).toList()
+                : <Widget>[];
+
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Saved Suggestions'),
+              ),
+              body: ListView(children: divided),
+            );
+          },
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Infinite Scrolling List'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.list),
+            onPressed: _pushSaved,
+            tooltip: 'Saved Suggestions',
+          ),
+        ],
       ),
-      body: RandomWords(key: key),
+      body: RandomWords(key: key, saved: _saved),
     );
   }
 }
 
 class RandomWords extends StatefulWidget {
-  const RandomWords({Key? key}) : super(key: key);
+  const RandomWords({Key? key, this.saved}) : super(key: key);
+
+  final saved;
 
   @override
   State<RandomWords> createState() => _RandomWordsState();
@@ -27,11 +72,27 @@ class _RandomWordsState extends State<RandomWords> {
   final _biggerFont = const TextStyle(fontSize: 18);
 
   Widget _buildRow(WordPair pair) {
+    final alreadySaved = widget.saved.contains(pair);
+
     return ListTile(
       title: Text(
         pair.asPascalCase,
         style: _biggerFont,
       ),
+      trailing: Icon(
+        alreadySaved ? Icons.favorite : Icons.favorite_border,
+        color: alreadySaved ? Colors.red : null,
+        semanticLabel: alreadySaved ? 'Remove from saved' : 'Save',
+      ),
+      onTap: () {
+        setState(() {
+          if (alreadySaved) {
+            widget.saved.remove(pair);
+          } else {
+            widget.saved.add(pair);
+          }
+        });
+      },
     );
   }
 
