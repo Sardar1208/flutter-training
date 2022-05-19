@@ -2,13 +2,13 @@ import "dart:convert";
 import 'package:uuid/uuid.dart';
 
 class News {
-  Source source;
-  String author;
-  String title;
-  String description;
-  String date;
-  String imageUrl;
-  bool liked;
+  late Source source;
+  late String author;
+  late String title;
+  late String description;
+  late String date;
+  late String imageUrl;
+  late bool liked;
   String id = const Uuid().v4();
 
   News({
@@ -21,16 +21,14 @@ class News {
     required this.liked,
   });
 
-  factory News.fromJson(Map<String, dynamic> parsedJson) {
-    return News(
-      source: Source.fromJson(parsedJson['source']),
-      author: parsedJson['author'],
-      title: parsedJson['title'],
-      description: parsedJson['description'],
-      date: parsedJson['publishedAt'],
-      imageUrl: parsedJson['urlToImage'],
-      liked: false,
-    );
+  News.fromJson(Map<String, dynamic> parsedJson) {
+    source = Source.fromJson(parsedJson['source']);
+    author = parsedJson['author'] ?? "";
+    title = parsedJson['title'] ?? "";
+    description = parsedJson['description'] ?? "";
+    date = parsedJson['publishedAt'] ?? "";
+    imageUrl = parsedJson['urlToImage'] ?? "";
+    liked = false;
   }
 }
 

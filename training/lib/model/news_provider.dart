@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:training/model/news_model.dart';
+import 'package:training/view_models/base_model.dart';
 
-class NewsList extends ChangeNotifier {
+class NewsList extends BaseModel {
+  String GET_NEWS = "get_news";
   List<News> newsList = [];
 
   void addNews(List<dynamic> data) {
@@ -23,9 +25,10 @@ class NewsList extends ChangeNotifier {
         liked: false,
       );
 
-      newsList.add(news);
+      // newsList.add(news);
+      newsList.add(News.fromJson(data[i]));
     }
-    notifyListeners();
+    setStatus(GET_NEWS, Status.Done);
   }
 
   void changeLike(String id) {
@@ -33,7 +36,7 @@ class NewsList extends ChangeNotifier {
     for (var i = 0; i < newsList.length; i++) {
       if (newsList[i].id == id) {
         print(i);
-        newsList[i].liked = !newsList[i].liked;
+        newsList[i].liked = !(newsList[i].liked ?? false);
       }
     }
     notifyListeners();
